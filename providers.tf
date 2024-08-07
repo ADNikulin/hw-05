@@ -35,6 +35,6 @@ provider "yandex" {
   cloud_id  = var.cloud_id
   folder_id = var.folder_id
   zone      = local.zone-default_zone
-  service_account_key_file = file("/home/anikulin/authorized_key.json")
+  service_account_key_file = file("~/authorized_key.json")
 }
 
