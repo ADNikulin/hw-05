@@ -10,14 +10,10 @@ variable "packages" {
   default = "nginx"
 }
 
-data "yandex_compute_image" "ubuntu" {
-  family = var.family_os-ubuntu-name
-}
-
 locals {
   userdata = {
     username       = "ubuntu"
-    ssh_public_key = "${var.path_to_ssh_key}"
+    ssh_public_key = var.path_to_ssh_key
   }
 }
 
