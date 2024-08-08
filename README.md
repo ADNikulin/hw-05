@@ -88,7 +88,7 @@
   4. Вставьте в комментарий PR результат анализа tflint и checkov, план изменений инфраструктуры из вывода команды terraform plan.
   5. Пришлите ссылку на PR для ревью. Вливать код в 'terraform-05' не нужно.
 
-  > https://github.com/ADNikulin/hw-05/pull/1
+  > [Пул реквест](https://github.com/ADNikulin/hw-05/pull/1)
 </details>
 
 ------
@@ -143,6 +143,7 @@
   }
   ```
 
+  [Код|https://github.com/ADNikulin/hw-05/blob/terraform-hotfix/variables.tf]
 
 </details>
 
