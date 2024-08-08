@@ -1,8 +1,3 @@
-variable "vm-settings-name-all" {
-  type    = string
-  default = "web"
-}
-
 variable "vm_instance-settings" {
   type = map(object({
     name             = string
@@ -27,7 +22,7 @@ variable "vm_instance-settings" {
 }
 
 module "test-vm" {
-  source         = "git::https://github.com/udjin10/yandex_compute_instance.git?ref=main"
+  source         = "git::https://github.com/udjin10/yandex_compute_instance.git?ref=1.0.0"
   env_name       = var.env-develop
   network_id     = module.nw-netology.vpc_network.network_id
   subnet_zones   = module.nw-netology.vpc_subnets[*].zone
@@ -49,7 +44,7 @@ module "test-vm" {
 }
 
 module "example-vm" {
-  source         = "git::https://github.com/udjin10/yandex_compute_instance.git?ref=main"
+  source         = "git::https://github.com/udjin10/yandex_compute_instance.git?ref=1.0.0"
   env_name       = var.env-stage
   network_id     = module.nw-netology.vpc_network.network_id
   subnet_zones   = module.nw-netology.vpc_subnets[*].zone
