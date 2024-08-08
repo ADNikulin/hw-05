@@ -37,7 +37,6 @@
      > ![image](https://github.com/user-attachments/assets/8daed30a-e18a-42e4-9bd7-84d156178479)
 
   3. Перечислите, какие **типы** ошибок обнаружены в проекте (без дублей).
-     - ![image](https://github.com/user-attachments/assets/bf8848e3-9e81-468f-85d0-1d26ef79922e)
      > - [terraform_module_pinned_source](https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.8.0/docs/rules/terraform_required_providers.md)
      > - [terraform_unused_declarations](https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.8.0/docs/rules/terraform_unused_declarations.md)
      > - [terraform_deprecated_interpolation](https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.8.0/docs/rules/terraform_deprecated_interpolation.md)
@@ -53,11 +52,29 @@
   <summary>Исходники задания</summary>
   
   1. Возьмите ваш GitHub-репозиторий с **выполненным ДЗ 4** в ветке 'terraform-04' и сделайте из него ветку 'terraform-05'.
+     > Подготовил ветку: https://github.com/ADNikulin/hw-05/tree/terraform-05
   2. Повторите демонстрацию лекции: настройте YDB, S3 bucket, yandex service account, права доступа и мигрируйте state проекта в S3 с блокировками. Предоставьте скриншоты процесса в качестве ответа.
+     - Настроил бакет: ![image](https://github.com/user-attachments/assets/b66e0f8c-df49-4d09-89d4-e0572f06c7f4)
+     - Настроил YMDB: ![image](https://github.com/user-attachments/assets/314e768b-97a5-41a1-b1f6-c03510d97848)
+     - создал аккаунт: ![image](https://github.com/user-attachments/assets/1f99304c-7004-4e6e-afed-4a6d0990d1ed) \
+     - ![image](https://github.com/user-attachments/assets/891b3cf2-e356-4a4a-81cf-81c4614696ab)
+
+     - ![image](https://github.com/user-attachments/assets/12070b56-9f5c-4434-bbc5-5ff0d91c1994)
+     - ![image](https://github.com/user-attachments/assets/1933f714-4a0d-44ec-b8ad-d9dcd3f3f9d8)
+     - ![image](https://github.com/user-attachments/assets/83ce7055-2051-4ce2-a836-20dad4d57240)
+
   3. Закоммитьте в ветку 'terraform-05' все изменения.
+     - https://github.com/ADNikulin/hw-05/commit/3c1d6b0f7c722e22e1808e5388ea53ea3b85de9c
   4. Откройте в проекте terraform console, а в другом окне из этой же директории попробуйте запустить terraform apply.
+     - ![image](https://github.com/user-attachments/assets/0f14f0bf-b3fa-40d7-82be-c7930e25b59d)
+     - ![image](https://github.com/user-attachments/assets/3daaf893-c888-4825-b3e1-a1aed14d87f4)
+
   5. Пришлите ответ об ошибке доступа к state.
-  6. Принудительно разблокируйте state. Пришлите команду и вывод.
+     - ![image](https://github.com/user-attachments/assets/9e6fa316-a9be-4656-9282-a6d461401e98)
+
+  7. Принудительно разблокируйте state. Пришлите команду и вывод.
+     - ![image](https://github.com/user-attachments/assets/85a548a6-57d1-4e8b-9340-0f6e8f5ec4e8)
+
 </details>
 
 ------
@@ -70,6 +87,8 @@
   3. Откройте новый pull request 'terraform-hotfix' --> 'terraform-05'. 
   4. Вставьте в комментарий PR результат анализа tflint и checkov, план изменений инфраструктуры из вывода команды terraform plan.
   5. Пришлите ссылку на PR для ревью. Вливать код в 'terraform-05' не нужно.
+
+  > https://github.com/ADNikulin/hw-05/pull/1
 </details>
 
 ------
@@ -81,6 +100,50 @@
   
   - type=string, description="ip-адрес" — проверка, что значение переменной содержит верный IP-адрес с помощью функций cidrhost() или regex(). Тесты:  "192.168.0.1" и "1920.1680.0.1";
   - type=list(string), description="список ip-адресов" — проверка, что все адреса верны. Тесты:  ["192.168.0.1", "1.1.1.1", "127.0.0.1"] и ["192.168.0.1", "1.1.1.1", "1270.0.0.1"].
+
+  > Как пример с кривыми названиями: 
+  ```
+  variable "ip_address" {
+    description = "ip-адрес"
+    type        = string
+    default = "19200.168.0.1"
+    validation {
+      condition     = can(regex("^((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\\.){3}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])$", var.ip_address))
+      error_message = "Неправильный ip-адрес"
+    }
+  }
+  
+  variable "ip_address_list" {
+    description = "список ip-адресов"
+    type        = list(string)
+    default     = ["192.16800.0.1", "1.1.1.1", "127.0.0.1"]
+    validation {
+      condition = alltrue([for ip in var.ip_address_list: can(regex("^((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\\.){3}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])$", ip))])
+      error_message = "Неправильный список ip-адресов"
+    }
+  }
+  ```
+
+  Далее если открываем terraform console в варианте выше: ![image](https://github.com/user-attachments/assets/a71879b9-c1db-404b-bb57-b552eac7a156)\
+  И в случае когда результаты корректные: ![image](https://github.com/user-attachments/assets/a50c7421-cac0-4cc9-8bb7-216369130fea) \
+
+  Можно ещё такой вариант: \
+  ![image](https://github.com/user-attachments/assets/4e4478fa-72e7-46af-bb21-24ce52341cd3) \
+  ![image](https://github.com/user-attachments/assets/1d2f22da-3f43-4998-b8ba-7f13fb558dbc) \
+
+  ```
+  variable "ip_address" {
+    description = "ip-адрес"
+    type        = string
+    default = "192.1680.0.1"
+    validation {
+      condition     = can(cidrhost("${var.ip_address}/32", 0))
+      error_message = "Неправильный ip-адрес"
+    }
+  }
+  ```
+
+
 </details>
 
 ## Дополнительные задания (со звёздочкой*)
